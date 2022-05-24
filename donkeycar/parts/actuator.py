@@ -12,10 +12,12 @@ from typing import Tuple
 import donkeycar as dk
 from donkeycar.parts.pins import OutputPin, PwmPin, PinState
 from donkeycar.utilities.deprecated import deprecated
+from donkeycar.utilities.logger import init_special_logger
 
+import datetime as dt
 logger = logging.getLogger(__name__)
-
-
+mylogger = init_special_logger ("Act")
+mylogger.setLevel(logging.INFO)
 #
 # pwm/duty-cycle/pulse
 # - Standard RC servo pulses range from 1 millisecond (full reverse) 
@@ -1124,6 +1126,7 @@ class RobocarsHat:
                                             self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE)
         with RobocarsHat.robocarshat_lock:
             cmd=("1,%d,%d\n" % (int(pulse_throttle), int(pulse_steering))).encode('ascii')
+            mylogger.debug("Tx CMD :{}".format(cmd))
             RobocarsHat.robocarshat_device.write(cmd)
             time.sleep(0.01)
 
@@ -1155,6 +1158,7 @@ class RobocarsHat:
                 if '\n' in self.buffer_string:
                     lines = self.buffer_string.split('\n') # Guaranteed to have at least 2 entries
                     last_received = lines[-2]
+                    mylogger.debug("Rx Cmd {} {}".format(len(lines), last_received))
                     #If the Arduino sends lots of empty lines, you'll lose the
                     #last filled line, so you could make the above statement conditional
                     #like so: if lines[-2]: last_received = lines[-2]

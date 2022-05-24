@@ -2,7 +2,13 @@ from datetime import datetime
 import donkeycar as dk
 import re
 import time
+import logging
 from donkeycar.parts.actuator import RobocarsHat
+from donkeycar.utilities.logger import init_special_logger
+
+mylogger = init_special_logger ("Rx")
+mylogger.setLevel(logging.INFO)
+
 
 class RobocarsHatIn:
     def __init__(self, cfg):
@@ -52,7 +58,7 @@ class RobocarsHatIn:
                         self.inAux2 = self.map_range(int(params[4]),
                             self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
                             -1, 1)
-
+                    mylogger.debug("CtrlIn {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
             stop = datetime.now()
             s = 0.01 - (stop - start).total_seconds()
             if s > 0:
