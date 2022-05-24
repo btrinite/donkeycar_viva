@@ -62,13 +62,14 @@ SSD1306_RESOLUTION = 1 # 1 = 128x32; 2 = 128x64
 # "DC_STEER_THROTTLE" uses HBridge pwm to control one steering dc motor, and one drive wheel motor
 # "DC_TWO_WHEEL" uses HBridge in 2-pin mode to control two drive motors, one on the left, and one on the right.
 # "DC_TWO_WHEEL_L298N" using HBridge in 3-pin mode to control two drive motors, one of the left and one on the right.
+# "ROBOCARSHAT" using robocars hat
 # "MOCK" no drive train.  This can be used to test other features in a test rig.
 # (deprecated) "SERVO_HBRIDGE_PWM" use ServoBlaster to output pwm control from the PiZero directly to control steering,
 #                                  and HBridge for a drive motor.
 # (deprecated) "PIGPIO_PWM" uses Raspberrys internal PWM
 # (deprecated) "I2C_SERVO" uses PCA9685 servo controller to control a steering servo and an ESC, as in a standard RC car
 #
-DRIVE_TRAIN_TYPE = "PWM_STEERING_THROTTLE"
+DRIVE_TRAIN_TYPE = "ROBOCARSHAT"
 
 #
 # PWM_STEERING_THROTTLE
@@ -463,6 +464,28 @@ MM1_SHOW_STEERING_VALUE = False
 # -- MacOS/Linux:please use 'ls /dev/tty.*' to find the correct serial port for mm1 
 #  eg.'/dev/tty.usbmodemXXXXXX' and replace the port accordingly
 MM1_SERIAL_PORT = '/dev/ttyS0'  # Serial Port for reading and sending MM1 data.
+
+#ROBOCARSHAT
+USE_ROBOCARSHAT_AS_CONTROLLER  = True
+ROBOCARSHAT_SERIAL_PORT = '/dev/ttyTHS1'
+ROBOCARSHAT_PWM_OUT_THROTTLE_MIN    =   1000
+ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE   =   1500
+ROBOCARSHAT_PWM_OUT_THROTTLE_MAX    =   2000
+ROBOCARSHAT_PWM_OUT_STEERING_MIN    =   1000
+ROBOCARSHAT_PWM_OUT_STEERING_IDLE   =   1500
+ROBOCARSHAT_PWM_OUT_STEERING_MAX    =   2000
+
+ROBOCARSHAT_PWM_IN_THROTTLE_MIN    =   1000
+ROBOCARSHAT_PWM_IN_THROTTLE_IDLE   =   1500
+ROBOCARSHAT_PWM_IN_THROTTLE_MAX    =   2000
+ROBOCARSHAT_PWM_IN_STEERING_MIN    =   1000
+ROBOCARSHAT_PWM_IN_STEERING_IDLE   =   1500
+ROBOCARSHAT_PWM_IN_STEERING_MAX    =   2000
+ROBOCARSHAT_PWM_IN_AUX_MIN    =   1000
+ROBOCARSHAT_PWM_IN_AUX_IDLE   =   1500
+ROBOCARSHAT_PWM_IN_AUX_MAX    =   2000
+
+ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE = 0.2
 
 #LOGGING
 HAVE_CONSOLE_LOGGING = True
