@@ -242,7 +242,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
     if cfg.USE_ROBOCARSHAT_AS_CONTROLLER:
         from donkeycar.parts.robocars_hat_ctrl import RobocarsHatIn
         ctr = RobocarsHatIn(cfg)
-        V.add(ctr, outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],threaded=True)
+        V.add(ctr, outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],threaded=False)
 
 
     #this throttle filter will allow one tap back for esc reverse
