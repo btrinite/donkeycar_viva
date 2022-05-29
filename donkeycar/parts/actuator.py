@@ -1128,14 +1128,14 @@ class RobocarsHat:
             cmd=("1,%d,%d\n" % (int(pulse_throttle), int(pulse_steering))).encode('ascii')
             mylogger.debug("Tx CMD :{}".format(cmd))
             RobocarsHat.robocarshat_device.write(cmd)
-            time.sleep(0.01)
 
     def run_threaded(self, throttle, steering):
-        self.throttle = throttle
-        self.steering = steering
+        # not implemented
+        pass
 
     def run(self, throttle, steering):
-        self.run_threaded(throttle, steering)
+        self.throttle = throttle
+        self.steering = steering
         self.set_pulse(self.throttle, self.steering)
 
     def shutdown(self):
@@ -1146,9 +1146,8 @@ class RobocarsHat:
         self.running = False
 
     def update(self):
-        while self.running:
-            self.set_pulse(self.throttle, self.steering)
-
+        # Not implemented
+        pass
 
     def readline(self):
         last_received = None
