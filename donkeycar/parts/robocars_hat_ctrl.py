@@ -62,7 +62,7 @@ class RobocarsHatIn:
         self.recording=False
         self.mode='user'
         user_throttle = self.inThrottle
-        if (self.inAux2>0):
+        if (self.inAux1<0.5):
             self.recording=True
         if (self.inAux1>0.5):
             self.mode='local_angle'
