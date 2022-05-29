@@ -19,6 +19,9 @@ class RobocarsHatIn:
         self.inAux1 = 0.0
         self.inAux2 = 0.0
 
+        self.recording=False
+        self.mode = 'user'
+
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
 
@@ -32,49 +35,58 @@ class RobocarsHatIn:
 
         return ((x-X_min) / XY_ratio + Y_min)
 
+    def getCommand(self):
+        l = self.sensor.readline()
+        if l != None:
+            params = l.split(',')
+            if len(params) == 5 and int(params[0])==1 :
+                if params[0].isnumeric():
+                    self.inThrottle = self.map_range(int(params[1]),
+                            self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+                        -1, 1)
+                if params[2].isnumeric():
+                    self.inSteering = self.map_range(int(params[2]),
+                        self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
+                        -1, 1)
+                if params[3].isnumeric():
+                    self.inAux1 = self.map_range(int(params[3]),
+                        self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
+                        -1, 1)
+                if params[4].isnumeric():
+                    self.inAux2 = self.map_range(int(params[4]),
+                        self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
+                        -1, 1)
+                mylogger.debug("CtrlIn {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
+
+    def processAUxCh(self):
+        self.recording=False
+        self.mode='user'
+        user_throttle = self.inThrottle
+        if (self.inAux2>0):
+            self.recording=True
+        if (self.inAux1>0.5):
+            self.mode='local_angle'
+            user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
+        return user_throttle
 
     def update(self):
 
         while self.on:
             start = datetime.now()
-
-            l = self.sensor.readline()
-            if l != None:
-                params = l.split(',')
-                if len(params) == 5 and int(params[0])==1 :
-                    if params[0].isnumeric():
-                        self.inThrottle = self.map_range(int(params[1]),
-                                self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
-                            -1, 1)
-                    if params[2].isnumeric():
-                        self.inSteering = self.map_range(int(params[2]),
-                            self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
-                            -1, 1)
-                    if params[3].isnumeric():
-                        self.inAux1 = self.map_range(int(params[3]),
-                            self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
-                            -1, 1)
-                    if params[4].isnumeric():
-                        self.inAux2 = self.map_range(int(params[4]),
-                            self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
-                            -1, 1)
-                    mylogger.debug("CtrlIn {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
-            stop = datetime.now()
+            self.getCommand()
             s = 0.01 - (stop - start).total_seconds()
             if s > 0:
                 time.sleep(s)
 
     def run_threaded(self):
+        user_throttle = self.processAUxCh ()
+        return self.inSteering, user_throttle, self.mode, self.recording
 
-        recording=False
-        mode='user'
-        user_throttle = self.inThrottle
-        if (self.inAux2>0):
-            recording=True
-        if (self.inAux1>0.5):
-            mode='local_angle'
-            user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
-        return self.inSteering, user_throttle, mode, recording
+    def run (self):
+        self.getCommand()
+        user_throttle = self.processAUxCh ()
+        return self.inSteering, user_throttle, self.mode, self.recording
+    
 
     def shutdown(self):
         # indicate that the thread should be stopped
