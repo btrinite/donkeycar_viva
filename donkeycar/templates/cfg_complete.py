@@ -496,6 +496,8 @@ THROTTLE_BRAKE_REV_FILTER = True
 ROBOCARSHAT_CH3_FEATURE = 'record/pilot' 
 ROBOCARSHAT_THROTTLE_EXP_INC = 0.05 
 
+#ROBOCARSHAT_STEERING_FIX used for steering calibration, enforce a fixed steering value (betzeen -1.0 and 1.0). None means no enforcment
+ROBOCARSHAT_STEERING_FIX = None 
 
 #LOGGING
 HAVE_CONSOLE_LOGGING = True

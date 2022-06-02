@@ -105,6 +105,12 @@ class RobocarsHatIn:
 
         return user_throttle
 
+    def processSteering (self):
+        user_steering = self.inSteering
+        if (self.cfg.ROBOCARSHAT_STEERING_FIX != None) :
+            user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
+        return user_steering
+
     def update(self):
 
         while self.on:
@@ -122,7 +128,8 @@ class RobocarsHatIn:
     def run (self):
         self.getCommand()
         user_throttle = self.processAUxCh ()
-        return self.inSteering, user_throttle, self.mode, self.recording
+        user_steering = self.processSteering()
+        return user_steering, user_throttle, self.mode, self.recording
     
 
     def shutdown(self):
