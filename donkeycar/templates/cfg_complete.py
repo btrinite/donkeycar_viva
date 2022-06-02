@@ -488,6 +488,15 @@ ROBOCARSHAT_PWM_IN_AUX_MAX    =   2000
 ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE = 0.2
 ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE = -0.2
 
+THROTTLE_BRAKE_REV_FILTER = False
+
+#ROBOCARSHAT_CH3_FEATURE control the feature attached to radio ch3
+# 'record/pilot' mean ch3 is used to control either data recording (lower position), either to enable pilot mode (upper position)
+# 'throttle_exploration' means special mode where CH3 is used to increment/decrement a fixed throttle value in user mode 
+ROBOCARSHAT_CH3_FEATURE = 'record/pilot' 
+ROBOCARSHAT_THROTTLE_EXP_INC = 0.05 
+
+
 #LOGGING
 HAVE_CONSOLE_LOGGING = True
 LOGGING_LEVEL = 'INFO'          # (Python logging level) 'NOTSET' / 'DEBUG' / 'INFO' / 'WARNING' / 'ERROR' / 'FATAL' / 'CRITICAL'

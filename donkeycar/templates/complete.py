@@ -245,9 +245,10 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
         V.add(ctr, outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],threaded=False)
 
 
-    #this throttle filter will allow one tap back for esc reverse
-    th_filter = ThrottleFilter()
-    V.add(th_filter, inputs=['user/throttle'], outputs=['user/throttle'])
+    if cfg.THROTTLE_BRAKE_REV_FILTER == True:
+        #this throttle filter will allow one tap back for esc reverse
+        th_filter = ThrottleFilter()
+        V.add(th_filter, inputs=['user/throttle'], outputs=['user/throttle'])
 
     #See if we should even run the pilot module.
     #This is only needed because the part run_condition only accepts boolean
