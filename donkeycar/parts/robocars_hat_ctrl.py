@@ -73,7 +73,8 @@ class RobocarsHatIn:
         #if switching back to user, then apply brake
         if self.mode=='user' and self.lastMode != 'user' :
             self.applyBrake=10 #brake duration
-            self.lastMode = self.mode
+
+        self.lastMode = self.mode
         
         if self.applyBrake>0:
             user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE
