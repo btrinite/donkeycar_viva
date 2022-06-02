@@ -21,6 +21,8 @@ class RobocarsHatIn:
 
         self.recording=False
         self.mode = 'user'
+        self.lastMode = self.mode
+        self.applyBrake = 0
 
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
@@ -67,6 +69,16 @@ class RobocarsHatIn:
         if (self.inAux1>0.5):
             self.mode='local_angle'
             user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
+
+        #if switching back to user, then apply brake
+        if self.mode=='user' and self.lastMode != 'user' :
+            self.applyBrake=10 #brake duration
+            self.lastMode = self.mode
+        
+        if self.applyBrake>0:
+            user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE
+            self.applyBrake-=1
+
         return user_throttle
 
     def update(self):
