@@ -83,15 +83,14 @@ class RobocarsHatIn:
                 user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
 
         elif self.ch3Feature == self.CH3_FEATURE_THROTTLEEXP :
-            if (self.lastAux1 != self.inAux1) :
+            if (abs(self.lastAux1 - self.inAux1)>0.5) :
                 if self.inAux1 > 0.5:
-                    self.fixThrottle = min(self.fixThrottle+self.cfg.ROBOCARSHAT_THROTTLE_EXP_INC,self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX)
+                    self.fixThrottle = min(self.fixThrottle+self.cfg.ROBOCARSHAT_THROTTLE_EXP_INC,1.0)
                     mylogger.info("CtrlIn Fixed throttle set to {}".format(self.fixThrottle))
                 if self.inAux1 < -0.5:
-                    self.fixThrottle = max(self.fixThrottle-self.cfg.ROBOCARSHAT_THROTTLE_EXP_INC,self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN)
+                    self.fixThrottle = max(self.fixThrottle-self.cfg.ROBOCARSHAT_THROTTLE_EXP_INC,0.0)
                     mylogger.info("CtrlIn Fixed throttle set to {}".format(self.fixThrottle))
             user_throttle = self.fixThrottle
-            
         #if switching back to user, then apply brake
         if self.mode=='user' and self.lastMode != 'user' :
             self.applyBrake=10 #brake duration
