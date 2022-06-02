@@ -86,6 +86,7 @@ class RobocarsHatIn:
         while self.on:
             start = datetime.now()
             self.getCommand()
+            stop = datetime.now()
             s = 0.01 - (stop - start).total_seconds()
             if s > 0:
                 time.sleep(s)
