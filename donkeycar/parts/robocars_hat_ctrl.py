@@ -107,6 +107,9 @@ class RobocarsHatIn:
                     self.fixSteering = max(self.fixSteering-self.cfg.ROBOCARSHAT_STEERING_EXP_INC,-1.0)
                     mylogger.info("CtrlIn Fixed steering set to {}".format(self.fixSteering))
             user_steering = self.fixSteering
+            
+        if self.cfg.ROBOCARSHAT_STEERING_FIX != None:
+            user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
 
         #if switching back to user, then apply brake
         if self.mode=='user' and self.lastMode != 'user' :

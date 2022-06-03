@@ -498,6 +498,9 @@ ROBOCARSHAT_CH3_FEATURE = 'record/pilot'
 ROBOCARSHAT_THROTTLE_EXP_INC = 0.05 
 ROBOCARSHAT_STEERING_EXP_INC = 0.05 
 
+#ROBOCARSHAT_STEERING_FIX used for steering calibration, enforce a fixed steering value (betzeen -1.0 and 1.0). None means no enforcment
+ROBOCARSHAT_STEERING_FIX = None 
+
 #LOGGING
 HAVE_CONSOLE_LOGGING = True
 LOGGING_LEVEL = 'INFO'          # (Python logging level) 'NOTSET' / 'DEBUG' / 'INFO' / 'WARNING' / 'ERROR' / 'FATAL' / 'CRITICAL'
