@@ -13,8 +13,8 @@ mylogger.setLevel(logging.INFO)
 class RobocarsHatIn:
     CH3_FEATURE_RECORDandPILOT=0
     CH3_FEATURE_THROTTLEEXP=1
-    CH3_FEATURE_STEERINGEXP=1
-
+    CH3_FEATURE_STEERINGEXP=2
+    
     def __init__(self, cfg):
 
         self.cfg = cfg
