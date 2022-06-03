@@ -120,9 +120,6 @@ class RobocarsHatIn:
             user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE
             self.applyBrake-=1
 
-        if (self.cfg.ROBOCARSHAT_STEERING_FIX != None) :
-            user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
-
         return user_throttle, user_steering
 
     def update(self):
