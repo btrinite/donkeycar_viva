@@ -13,6 +13,7 @@ mylogger.setLevel(logging.INFO)
 class RobocarsHatIn:
     CH3_FEATURE_RECORDandPILOT=0
     CH3_FEATURE_THROTTLEEXP=1
+    CH3_FEATURE_STEERINGEXP=1
 
     def __init__(self, cfg):
 
@@ -20,6 +21,7 @@ class RobocarsHatIn:
         self.inSteering = 0.0
         self.inThrottle = 0.0
         self.fixThrottle = 0.0
+        self.fixSteering = 0.0
         self.inAux1 = 0.0
         self.inAux2 = 0.0
         self.lastAux1 = -1.0
@@ -29,10 +31,13 @@ class RobocarsHatIn:
         self.lastMode = self.mode
         self.applyBrake = 0
 
-        #Default CH3 feature
+        #CH3 feature
         self.ch3Feature = self.CH3_FEATURE_RECORDandPILOT
         if self.cfg.ROBOCARSHAT_CH3_FEATURE == 'throttle_exploration':
             self.ch3Feature = self.CH3_FEATURE_THROTTLEEXP
+        elif self.cfg.ROBOCARSHAT_CH3_FEATURE == 'steering_exploration':
+            self.ch3Feature = self.CH3_FEATURE_STEERINGEXP
+
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
 
@@ -73,6 +78,7 @@ class RobocarsHatIn:
         self.recording=False
         self.mode='user'
         user_throttle = self.inThrottle
+        user_steering = self.inSteering
 
         if self.ch3Feature == self.CH3_FEATURE_RECORDandPILOT :
 
@@ -91,6 +97,17 @@ class RobocarsHatIn:
                     self.fixThrottle = max(self.fixThrottle-self.cfg.ROBOCARSHAT_THROTTLE_EXP_INC,0.0)
                     mylogger.info("CtrlIn Fixed throttle set to {}".format(self.fixThrottle))
             user_throttle = self.fixThrottle
+
+        elif self.ch3Feature == self.CH3_FEATURE_STEERINGEXP :
+            if (abs(self.lastAux1 - self.inAux1)>0.5) :
+                if self.inAux1 > 0.5:
+                    self.fixSteering = min(self.fixSteering+self.cfg.ROBOCARSHAT_STEERING_EXP_INC,1.0)
+                    mylogger.info("CtrlIn Fixed steering set to {}".format(self.fixSteering))
+                if self.inAux1 < -0.5:
+                    self.fixSteering = max(self.fixSteering-self.cfg.ROBOCARSHAT_STEERING_EXP_INC,-1.0)
+                    mylogger.info("CtrlIn Fixed steering set to {}".format(self.fixSteering))
+            user_steering = self.fixSteering
+
         #if switching back to user, then apply brake
         if self.mode=='user' and self.lastMode != 'user' :
             self.applyBrake=10 #brake duration
@@ -103,13 +120,10 @@ class RobocarsHatIn:
             user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE
             self.applyBrake-=1
 
-        return user_throttle
-
-    def processSteering (self):
-        user_steering = self.inSteering
         if (self.cfg.ROBOCARSHAT_STEERING_FIX != None) :
             user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
-        return user_steering
+
+        return user_throttle, user_steering
 
     def update(self):
 
@@ -122,13 +136,12 @@ class RobocarsHatIn:
                 time.sleep(s)
 
     def run_threaded(self):
-        user_throttle = self.processAUxCh ()
-        return self.inSteering, user_throttle, self.mode, self.recording
+        user_throttle, user_steering = self.processAUxCh ()
+        return user_steering, user_throttle, self.mode, self.recording
 
     def run (self):
         self.getCommand()
-        user_throttle = self.processAUxCh ()
-        user_steering = self.processSteering()
+        user_throttle, user_steering = self.processAUxCh ()
         return user_steering, user_throttle, self.mode, self.recording
     
 

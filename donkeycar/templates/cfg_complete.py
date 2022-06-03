@@ -493,8 +493,10 @@ THROTTLE_BRAKE_REV_FILTER = True
 #ROBOCARSHAT_CH3_FEATURE control the feature attached to radio ch3
 # 'record/pilot' mean ch3 is used to control either data recording (lower position), either to enable pilot mode (upper position)
 # 'throttle_exploration' means special mode where CH3 is used to increment/decrement a fixed throttle value in user mode 
+# 'steering_exploration' means special mode where CH3 is used to increment/decrement a fixed steering value in user mode 
 ROBOCARSHAT_CH3_FEATURE = 'record/pilot' 
 ROBOCARSHAT_THROTTLE_EXP_INC = 0.05 
+ROBOCARSHAT_STEERING_EXP_INC = 0.05 
 
 #ROBOCARSHAT_STEERING_FIX used for steering calibration, enforce a fixed steering value (betzeen -1.0 and 1.0). None means no enforcment
 ROBOCARSHAT_STEERING_FIX = None 
