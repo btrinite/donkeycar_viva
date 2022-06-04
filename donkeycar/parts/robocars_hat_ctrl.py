@@ -116,7 +116,7 @@ class RobocarsHatIn:
         if self.cfg.ROBOCARSHAT_STEERING_FIX != None:
             user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
 
-        if self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
+        if self.mode=='user' and self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
             inds = np.digitize(user_throttle, self.discretesThrottle)
             user_throttle = self.cfg.ROBOCARSHAT_THROTTLE_DISCRET[inds[0]-1]
 
