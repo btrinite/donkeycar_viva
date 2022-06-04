@@ -3,6 +3,7 @@ import donkeycar as dk
 import re
 import time
 import logging
+import numpy as np
 from donkeycar.parts.actuator import RobocarsHat
 from donkeycar.utilities.logger import init_special_logger
 
@@ -14,7 +15,7 @@ class RobocarsHatIn:
     CH3_FEATURE_RECORDandPILOT=0
     CH3_FEATURE_THROTTLEEXP=1
     CH3_FEATURE_STEERINGEXP=2
-    
+
     def __init__(self, cfg):
 
         self.cfg = cfg
@@ -37,6 +38,10 @@ class RobocarsHatIn:
             self.ch3Feature = self.CH3_FEATURE_THROTTLEEXP
         elif self.cfg.ROBOCARSHAT_CH3_FEATURE == 'steering_exploration':
             self.ch3Feature = self.CH3_FEATURE_STEERINGEXP
+
+        if self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
+            self.discretesThrottle = np.arange(0.0,1.0001,1.0/len(self.cfg.ROBOCARSHAT_THROTTLE_DISCRET))
+            mylogger.info("CtrlIn Discrete throttle thresholds set to {}".format(self.discretesThrottle))
 
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
@@ -110,6 +115,10 @@ class RobocarsHatIn:
             
         if self.cfg.ROBOCARSHAT_STEERING_FIX != None:
             user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
+
+        if self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
+            inds = np.digitize(user_throttle, self.discretesThrottle)
+            user_throttle = self.cfg.ROBOCARSHAT_THROTTLE_DISCRET[inds[0]-1]
 
         #if switching back to user, then apply brake
         if self.mode=='user' and self.lastMode != 'user' :

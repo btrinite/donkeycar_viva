@@ -500,6 +500,7 @@ ROBOCARSHAT_STEERING_EXP_INC = 0.05
 
 #ROBOCARSHAT_STEERING_FIX used for steering calibration, enforce a fixed steering value (betzeen -1.0 and 1.0). None means no enforcment
 ROBOCARSHAT_STEERING_FIX = None 
+#ROBOCARSHAT_THROTTLE_DISCRET = [0.0, 0.1, 0.2] 
 
 #LOGGING
 HAVE_CONSOLE_LOGGING = True
