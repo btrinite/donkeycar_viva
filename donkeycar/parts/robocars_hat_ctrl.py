@@ -118,6 +118,7 @@ class RobocarsHatIn:
 
         if self.mode=='user' and self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
             inds = np.digitize(user_throttle, self.discretesThrottle)
+            inds = max(inds,0)
             user_throttle = self.cfg.ROBOCARSHAT_THROTTLE_DISCRET[inds[0]-1]
 
         #if switching back to user, then apply brake
