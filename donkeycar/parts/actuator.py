@@ -1110,28 +1110,24 @@ class RobocarsHat:
 
     def set_pulse(self, throttle, steering):
 
-        if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
-            if (self.cfg.inThrottleIdle == -1 or self.cfg.inSteeringIdle == -1):
-                return
-            throttle_idle = self.cfg.inThrottleIdle
-            steering_idle = self.cfg.inSteeringIdle
-        else:
-            throttle_idle = self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE
-            steering_idle = self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE
-
         if throttle > 0:
             pulse_throttle = dk.utils.map_range(throttle, 0, self.MAX_THROTTLE,
-                                            throttle_idle, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
-        else:
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
+        elif throttle<0:
             pulse_throttle = dk.utils.map_range(throttle, self.MIN_THROTTLE, 0,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MIN, throttle_idle)
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE)
+        else:
+            pulse_throttle = self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE
 
         if steering > 0:
             pulse_steering = dk.utils.map_range(steering, 0, self.MAX_STEERING,
-                                            steering_idle, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MAX)
-        else:
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MAX)
+        elif steering<0 :
             pulse_steering = dk.utils.map_range(steering, self.MIN_STEERING, 0,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, steering_idle)
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE)
+        else:
+            pulse_steering = self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE
+            
         with RobocarsHat.robocarshat_lock:
             cmd=("1,%d,%d\n" % (int(pulse_throttle), int(pulse_steering))).encode('ascii')
             mylogger.debug("Tx CMD :{}".format(cmd))

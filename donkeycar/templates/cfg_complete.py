@@ -468,6 +468,8 @@ MM1_SERIAL_PORT = '/dev/ttyS0'  # Serial Port for reading and sending MM1 data.
 #ROBOCARSHAT
 USE_ROBOCARSHAT_AS_CONTROLLER  = True
 ROBOCARSHAT_SERIAL_PORT = '/dev/ttyTHS1'
+
+# Following values must be aligned with values in Hat !
 ROBOCARSHAT_PWM_OUT_THROTTLE_MIN    =   1000
 ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE   =   1500
 ROBOCARSHAT_PWM_OUT_THROTTLE_MAX    =   2000
@@ -475,6 +477,8 @@ ROBOCARSHAT_PWM_OUT_STEERING_MIN    =   1000
 ROBOCARSHAT_PWM_OUT_STEERING_IDLE   =   1500
 ROBOCARSHAT_PWM_OUT_STEERING_MAX    =   2000
 
+# Folowing values can be ajusted to normalized btzeen -1 and 1.
+# # If  ROBOCARSHAT_USE_AUTOCALIBRATION is used, IDLE values are automatically identified by the Hat
 ROBOCARSHAT_PWM_IN_THROTTLE_MIN    =   1000
 ROBOCARSHAT_PWM_IN_THROTTLE_IDLE   =   1500
 ROBOCARSHAT_PWM_IN_THROTTLE_MAX    =   2000
@@ -488,7 +492,7 @@ ROBOCARSHAT_PWM_IN_AUX_MAX    =   2000
 ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE = 0.2
 ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE = -0.2
 
-THROTTLE_BRAKE_REV_FILTER = True
+THROTTLE_BRAKE_REV_FILTER = False # ESC is configured in Fw/Rv mode (no braking)
 
 #ROBOCARSHAT_CH3_FEATURE control the feature attached to radio ch3
 # 'record/pilot' mean ch3 is used to control either data recording (lower position), either to enable pilot mode (upper position)
@@ -502,15 +506,17 @@ ROBOCARSHAT_STEERING_EXP_INC = 0.05
 ROBOCARSHAT_STEERING_FIX = None 
 
 # ROBOCARSHAT_THROTTLE_DISCRET used to control throttle with discretes values (only in user mode, first value must be 0.0)
+# ROBOCARSHAT_THROTTLE_DISCRET has precedence over ROBOCARSHAT_THROTTLE_FLANGER
 #Example : ROBOCARSHAT_THROTTLE_DISCRET = [0.0, 0.1, 0.2], if not used, set to None 
 ROBOCARSHAT_THROTTLE_DISCRET = None 
 
 # ROBOCARSHAT_THROTTLE_FLANGER used to control throttle flange, giving a range betzeen -1 and 1, like [-0.1, 0.1]
 #Example : ROBOCARSHAT_THROTTLE_FLANGER = [-0.1, 0.1], if not used, set to None 
-ROBOCARSHAT_THROTTLE_FLANGER = None 
+#ROBOCARSHAT_THROTTLE_FLANGER = None 
+ROBOCARSHAT_THROTTLE_FLANGER = [-0.2,0.2] 
 
 # ROBOCARSHAT_USE_AUTOCALIBRATION used to rely on idle coming from autocalibation done by hat
-ROBOCARSHAT_USE_AUTOCALIBRATION = False
+ROBOCARSHAT_USE_AUTOCALIBRATION = True
 
 #LOGGING
 HAVE_CONSOLE_LOGGING = True

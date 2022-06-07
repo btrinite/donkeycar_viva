@@ -38,8 +38,6 @@ class RobocarsHatIn:
         else:
             self.inThrottleIdle = 1500
             self.inSteeringIdle = 1500
-        self.cfg.inThrottleIdle = self.inThrottleIdle # hack to communicate idle value to actuator
-        self.cfg.inSteeringIdle = self.inSteeringIdle # hack to communicate idle value to actuator
 
         #CH3 feature
         self.ch3Feature = self.CH3_FEATURE_RECORDandPILOT
@@ -89,11 +87,6 @@ class RobocarsHatIn:
                             self.inThrottle = self.map_range(int(params[1]),
                                     self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
                                 -1, 1)
-                        if (self.cfg.ROBOCARSHAT_THROTTLE_FLANGER != None) :
-                            self.inThrottle = self.dualMap(self.inThrottle,
-                                    -1, 0, 1,
-                                self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[0], 0, self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[1])
-
 
                     if params[2].isnumeric() and self.inSteeringIdle != -1:
                         if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
@@ -120,13 +113,11 @@ class RobocarsHatIn:
                 if len(params) == 3 and int(params[0])==3 :
                     if params[1].isnumeric():
                         self.inThrottleIdle = int(params[1])
-                        self.cfg.inThrottleIdle = self.inThrottleIdle # hack to communicate idle value to actuator
                     if params[2].isnumeric():
                         self.inSteeringIdle = int(params[2])
-                        self.cfg.inSteeringIdle = self.inSteeringIdle
                     mylogger.debug("CtrlIn Idle {} {} ".format(int(params[1]), int(params[2])))
 
-    def processAUxCh(self):
+    def processAltModes(self):
         self.recording=False
         self.mode='user'
         user_throttle = self.inThrottle
@@ -163,7 +154,12 @@ class RobocarsHatIn:
         if self.cfg.ROBOCARSHAT_STEERING_FIX != None:
             user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
 
-        if self.mode=='user' and self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
+        if (self.mode=='user' and self.cfg.ROBOCARSHAT_THROTTLE_FLANGER != None) :
+            user_throttle = self.dualMap(user_throttle,
+                -1, 0, 1,
+                self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[0], 0, self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[1])
+
+        if (self.mode=='user' and self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None) :
             inds = np.digitize(user_throttle, self.discretesThrottle)
             inds = max(inds,1)
             user_throttle = self.cfg.ROBOCARSHAT_THROTTLE_DISCRET[inds-1]
@@ -193,12 +189,12 @@ class RobocarsHatIn:
                 time.sleep(s)
 
     def run_threaded(self):
-        user_throttle, user_steering = self.processAUxCh ()
+        user_throttle, user_steering = self.processAltModes ()
         return user_steering, user_throttle, self.mode, self.recording
 
     def run (self):
         self.getCommand()
-        user_throttle, user_steering = self.processAUxCh ()
+        user_throttle, user_steering = self.processAltModes ()
         return user_steering, user_throttle, self.mode, self.recording
     
 
