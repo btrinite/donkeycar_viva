@@ -15,6 +15,7 @@ class RobocarsHatIn:
     CH3_FEATURE_RECORDandPILOT=0
     CH3_FEATURE_THROTTLEEXP=1
     CH3_FEATURE_STEERINGEXP=2
+    CH3_FEATURE_OUTPUT_STEERING_TRIM=3
 
     def __init__(self, cfg):
 
@@ -23,6 +24,7 @@ class RobocarsHatIn:
         self.inThrottle = 0.0
         self.fixThrottle = 0.0
         self.fixSteering = 0.0
+        self.fixOutputSteeringTrim = 1500
         self.inAux1 = 0.0
         self.inAux2 = 0.0
         self.lastAux1 = -1.0
@@ -45,6 +47,8 @@ class RobocarsHatIn:
             self.ch3Feature = self.CH3_FEATURE_THROTTLEEXP
         elif self.cfg.ROBOCARSHAT_CH3_FEATURE == 'steering_exploration':
             self.ch3Feature = self.CH3_FEATURE_STEERINGEXP
+        elif self.cfg.ROBOCARSHAT_CH3_FEATURE == 'output_steering_trim':
+            self.ch3Feature = self.CH3_FEATURE_OUTPUT_STEERING_TRIM
 
         if self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
             self.discretesThrottle = np.arange(0.0,1.0001,1.0/len(self.cfg.ROBOCARSHAT_THROTTLE_DISCRET))
@@ -144,13 +148,23 @@ class RobocarsHatIn:
         elif self.ch3Feature == self.CH3_FEATURE_STEERINGEXP :
             if (abs(self.lastAux1 - self.inAux1)>0.5) :
                 if self.inAux1 > 0.5:
-                    self.fixSteering = min(self.fixSteering+self.cfg.ROBOCARSHAT_STEERING_EXP_INC,1.0)
+                    self.fixSteering = min(self.fixOutputSteeringTrim+self.cfg.ROBOCARSHAT_STEERING_EXP_INC,1.0)
                     mylogger.info("CtrlIn Fixed steering set to {}".format(self.fixSteering))
                 if self.inAux1 < -0.5:
-                    self.fixSteering = max(self.fixSteering-self.cfg.ROBOCARSHAT_STEERING_EXP_INC,-1.0)
+                    self.fixSteering = max(self.fixOutputSteeringTrim-self.cfg.ROBOCARSHAT_STEERING_EXP_INC,-1.0)
                     mylogger.info("CtrlIn Fixed steering set to {}".format(self.fixSteering))
-            user_steering = self.fixSteering
-            
+                    self.sensor.setSteeringTrim (self.fixOutputSteeringTrim)            
+
+        elif self.ch3Feature == self.CH3_FEATURE_OUTPUT_STEERING_TRIM :
+            if (abs(self.lastAux1 - self.inAux1)>0.5) :
+                if self.inAux1 > 0.5:
+                    self.fixOutputSteeringTrim = min(self.fixOutputSteeringTrim+self.cfg.ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC,2000)
+                    mylogger.info("CtrlIn Fixed output steering set to {}".format(self.fixOutputSteeringTrim))
+                if self.inAux1 < -0.5:
+                    self.fixOutputSteeringTrim = max(self.fixOutputSteeringTrim-self.cfg.ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC,1000)
+                    mylogger.info("CtrlIn Fixed output steering set to {}".format(self.fixOutputSteeringTrim))
+                    self.sensor.setSteeringTrim (self.fixOutputSteeringTrim)            
+
         if self.cfg.ROBOCARSHAT_STEERING_FIX != None:
             user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX
 

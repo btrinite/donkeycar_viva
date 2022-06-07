@@ -1101,6 +1101,7 @@ class RobocarsHat:
         self.buffer_string = ''
         self.throttle = 0
         self.steering = 0
+        self.steeringTrim = None
 
         if RobocarsHat.robocarshat_device == None:
             RobocarsHat.robocarshat_device = serial.Serial(self.cfg.ROBOCARSHAT_SERIAL_PORT, 1000000, timeout = 0.01)
@@ -1108,8 +1109,12 @@ class RobocarsHat:
         self.running = True
         print('RobocarsHat drive train created')
 
+    def setSteeringTrim (self, steeringTrim) :
+        self.steeringTrim=steeringTrim
+
     def set_pulse(self, throttle, steering):
 
+        
         if throttle > 0:
             pulse_throttle = dk.utils.map_range(throttle, 0, self.MAX_THROTTLE,
                                             self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
@@ -1119,15 +1124,20 @@ class RobocarsHat:
         else:
             pulse_throttle = self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE
 
+        steeringIdle = self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE
+        
+        if (self.steeringTrim != None):
+            steeringIdle = self.steeringTrim;
+
         if steering > 0:
             pulse_steering = dk.utils.map_range(steering, 0, self.MAX_STEERING,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MAX)
+                                            steeringIdle, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MAX)
         elif steering<0 :
             pulse_steering = dk.utils.map_range(steering, self.MIN_STEERING, 0,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE)
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, steeringIdle)
         else:
-            pulse_steering = self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE
-            
+            pulse_steering = steeringIdle
+
         with RobocarsHat.robocarshat_lock:
             cmd=("1,%d,%d\n" % (int(pulse_throttle), int(pulse_steering))).encode('ascii')
             mylogger.debug("Tx CMD :{}".format(cmd))

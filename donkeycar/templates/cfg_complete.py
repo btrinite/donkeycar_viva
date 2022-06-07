@@ -498,9 +498,11 @@ THROTTLE_BRAKE_REV_FILTER = False # ESC is configured in Fw/Rv mode (no braking)
 # 'record/pilot' mean ch3 is used to control either data recording (lower position), either to enable pilot mode (upper position)
 # 'throttle_exploration' means special mode where CH3 is used to increment/decrement a fixed throttle value in user mode 
 # 'steering_exploration' means special mode where CH3 is used to increment/decrement a fixed steering value in user mode 
+# 'output_steering_trim' means special mode where CH3 is used to increment is fixed steering output for triming direction in user mode
 ROBOCARSHAT_CH3_FEATURE = 'record/pilot' 
 ROBOCARSHAT_THROTTLE_EXP_INC = 0.05 
 ROBOCARSHAT_STEERING_EXP_INC = 0.05 
+ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC = 10 
 
 #ROBOCARSHAT_STEERING_FIX used for steering calibration, enforce a fixed steering value (betzeen -1.0 and 1.0). None means no enforcment
 ROBOCARSHAT_STEERING_FIX = None 
