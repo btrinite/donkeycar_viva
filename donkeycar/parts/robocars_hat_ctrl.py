@@ -154,7 +154,7 @@ class RobocarsHatIn:
                 if self.inAux1 < -0.5:
                     self.fixSteering = max(self.fixOutputSteeringTrim-self.cfg.ROBOCARSHAT_STEERING_EXP_INC,-1.0)
                     mylogger.info("CtrlIn Fixed steering set to {}".format(self.fixSteering))
-                    self.sensor.setSteeringTrim (self.fixOutputSteeringTrim)            
+                user_steering = self.fixSteering            
 
         elif self.ch3Feature == self.CH3_FEATURE_OUTPUT_STEERING_TRIM :
             if (abs(self.lastAux1 - self.inAux1)>0.5) :
