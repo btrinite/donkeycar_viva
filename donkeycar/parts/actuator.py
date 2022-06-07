@@ -1093,6 +1093,7 @@ class RobocarsHat:
 
     robocarshat_device = None
     robocarshat_lock = threading.Lock()
+    steeringTrim = None # common to the two instances
 
     def __init__(self, cfg):
         import serial
@@ -1101,7 +1102,6 @@ class RobocarsHat:
         self.buffer_string = ''
         self.throttle = 0
         self.steering = 0
-        self.steeringTrim = None
 
         if RobocarsHat.robocarshat_device == None:
             RobocarsHat.robocarshat_device = serial.Serial(self.cfg.ROBOCARSHAT_SERIAL_PORT, 1000000, timeout = 0.01)
@@ -1110,12 +1110,11 @@ class RobocarsHat:
         print('RobocarsHat drive train created')
 
     def setSteeringTrim (self, steeringTrim) :
-        self.steeringTrim=steeringTrim
+        RobocarsHat.steeringTrim=steeringTrim
         mylogger.info("Tx set Steering Trim to :{}".format(self.steeringTrim))
 
     def set_pulse(self, throttle, steering):
 
-        
         if throttle > 0:
             pulse_throttle = dk.utils.map_range(throttle, 0, self.MAX_THROTTLE,
                                             self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
@@ -1127,8 +1126,8 @@ class RobocarsHat:
 
         steeringIdle = self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE
         
-        if (self.steeringTrim != None):
-            steeringIdle = self.steeringTrim;
+        if (RobocarsHat.steeringTrim != None):
+            steeringIdle = RobocarsHat.steeringTrim;
 
         if steering > 0:
             pulse_steering = dk.utils.map_range(steering, 0, self.MAX_STEERING,
