@@ -1159,7 +1159,7 @@ class RobocarsHat:
                     self.buffer_string = lines[-1]
                     drive = list(filter(lambda line: line.startswith('1'), lines[:-1]))
                     battery = list(filter(lambda line: line.startswith('0'), lines[:-1]))
-                    sensors = list(filter(lambda line: line.startswith('2'), line[:-1]))
+                    sensors = list(filter(lambda line: line.startswith('2'), lines[:-1]))
                     calibration = list(filter(lambda line: line.startswith('3'), lines[:-1]))
                     last_received = drive[-2] + calibration[-2]
                     #If the Arduino sends lots of empty lines, you'll lose the
