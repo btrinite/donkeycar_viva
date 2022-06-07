@@ -76,7 +76,6 @@ class RobocarsHatIn:
         if cmds != None and len(cmds)>0:
             for l in cmds:
                 params = l.split(',')
-                mylogger.debug("CtrlIn cmd {}, len {}".format(int(params[0]), len(params)))
                 if len(params) == 5 and int(params[0])==1 :
                     if params[1].isnumeric() and self.inThrottleIdle != -1:
                         if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
