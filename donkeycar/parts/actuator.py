@@ -1150,7 +1150,7 @@ class RobocarsHat:
         pass
 
     def readline(self):
-        last_received = None
+        last_received = []
         with RobocarsHat.robocarshat_lock:
             while (RobocarsHat.robocarshat_device.inWaiting()>0):
                 self.buffer_string =  self.buffer_string + RobocarsHat.robocarshat_device.read(RobocarsHat.robocarshat_device.inWaiting()).decode('ascii')
@@ -1161,7 +1161,10 @@ class RobocarsHat:
                     battery = list(filter(lambda line: line.startswith('0'), lines[:-1]))
                     sensors = list(filter(lambda line: line.startswith('2'), lines[:-1]))
                     calibration = list(filter(lambda line: line.startswith('3'), lines[:-1]))
-                    last_received = drive[-1] + calibration[-1]
+                    if (len(drive)>0) :
+                        last_received.push(drive[-1])
+                    if (len(calibration)>0) :
+                        last_received.push (calibration[-1])
                     #If the Arduino sends lots of empty lines, you'll lose the
                     #last filled line, so you could make the above statement conditional
                     #like so: if lines[-2]: last_received = lines[-2]
