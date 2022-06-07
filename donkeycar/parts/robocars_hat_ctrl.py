@@ -59,9 +59,9 @@ class RobocarsHatIn:
 
     def dualMap (self, input, input_min, input_idle, input_max, output_min, output_idle, output_max) :
         if (input < input_idle) :
-            output = self.map_range (input, output_min, output_idle, -1, 0)
+            output = self.map_range (input, input_min, input_idle, output_min, output_idle)
         elif (input>input_idle) :
-            output = self.map_range (input, output_idle, output_max, 0, 1)
+            output = self.map_range (input, input_idle, input_max, output_idle, output_max)
         else:
             output = output_idle
         return output
