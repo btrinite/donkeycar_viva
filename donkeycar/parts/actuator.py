@@ -1111,6 +1111,8 @@ class RobocarsHat:
     def set_pulse(self, throttle, steering):
 
         if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+            if (self.cfg.inThrottleIdle == -1 or self.cfg.inSteeringIdle == -1):
+                return
             throttle_idle = self.cfg.inThrottleIdle
             steering_idle = self.cfg.inSteeringIdle
         else:
