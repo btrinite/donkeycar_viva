@@ -505,6 +505,13 @@ ROBOCARSHAT_STEERING_FIX = None
 #Example : ROBOCARSHAT_THROTTLE_DISCRET = [0.0, 0.1, 0.2], if not used, set to None 
 ROBOCARSHAT_THROTTLE_DISCRET = None 
 
+# ROBOCARSHAT_THROTTLE_FLANGER used to control throttle flange, giving a range betzeen -1 and 1, like [-0.1, 0.1]
+#Example : ROBOCARSHAT_THROTTLE_FLANGER = [-0.1, 0.1], if not used, set to None 
+ROBOCARSHAT_THROTTLE_FLANGER = None 
+
+# ROBOCARSHAT_USE_AUTOCALIBRATION used to rely on idle coming from autocalibation done by hat
+ROBOCARSHAT_USE_AUTOCALIBRATION = False
+
 #LOGGING
 HAVE_CONSOLE_LOGGING = True
 LOGGING_LEVEL = 'INFO'          # (Python logging level) 'NOTSET' / 'DEBUG' / 'INFO' / 'WARNING' / 'ERROR' / 'FATAL' / 'CRITICAL'

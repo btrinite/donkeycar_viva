@@ -31,7 +31,8 @@ class RobocarsHatIn:
         self.mode = 'user'
         self.lastMode = self.mode
         self.applyBrake = 0
-
+        self.inThrottleIdle = -1
+        self.inSteeringIdle = -1
         #CH3 feature
         self.ch3Feature = self.CH3_FEATURE_RECORDandPILOT
         if self.cfg.ROBOCARSHAT_CH3_FEATURE == 'throttle_exploration':
@@ -56,19 +57,44 @@ class RobocarsHatIn:
 
         return ((x-X_min) / XY_ratio + Y_min)
 
+    def dualMap (self, input, input_min, input_idle, input_max, output_min, output_idle, output_max) :
+        if (input < input_idle) :
+            output = self.map_range (input, output_min, output_idle, -1, 0)
+        elif (input>input_idle) :
+            output = self.map_range (input, output_idle, output_max, 0, 1)
+        else:
+            output = output_idle
+
     def getCommand(self):
         l = self.sensor.readline()
         if l != None:
             params = l.split(',')
             if len(params) == 5 and int(params[0])==1 :
-                if params[0].isnumeric():
-                    self.inThrottle = self.map_range(int(params[1]),
-                            self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
-                        -1, 1)
-                if params[2].isnumeric():
-                    self.inSteering = self.map_range(int(params[2]),
-                        self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
-                        -1, 1)
+                if params[1].isnumeric() and self.inThrottleIdle != -1:
+                    if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+                        self.inThrottle = self.dualMap(int(params[1]),
+                                self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.inThrottleIdle, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+                            -1, 0, 1)
+                    else :
+                        self.inThrottle = self.map_range(int(params[1]),
+                                self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+                            -1, 1)
+                    if (self.cfg.ROBOCARSHAT_THROTTLE_FLANGER != None) :
+                        self.inThrottle = self.dualMap(self.inThrottle,
+                                -1, 0, 1,
+                            self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[0], 0, self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[1])
+
+
+                if params[2].isnumeric() and self.inSteeringIdle != -1:
+                    if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+                        self.inSteering = self.dualMap(int(params[2]),
+                                self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.inSteeringIdle, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
+                            -1, 0, 1)
+                    else:
+                        self.inSteering = self.map_range(int(params[2]),
+                            self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
+                            -1, 1)
+
                 if params[3].isnumeric():
                     self.inAux1 = self.map_range(int(params[3]),
                         self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
@@ -78,6 +104,13 @@ class RobocarsHatIn:
                         self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
                         -1, 1)
                 mylogger.debug("CtrlIn {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
+
+            if len(params) == 3 and int(params[0])==3 :
+                if params[1].isnumeric():
+                    self.inThrottleIdle = int(params[1])
+                if params[2].isnumeric():
+                    self.inSteeringIdle = int(params[2])
+                mylogger.debug("CtrlIn Idle {} {} ".format(int(params[1]), int(params[2])))
 
     def processAUxCh(self):
         self.recording=False
