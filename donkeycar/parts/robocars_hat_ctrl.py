@@ -64,6 +64,7 @@ class RobocarsHatIn:
             output = self.map_range (input, output_idle, output_max, 0, 1)
         else:
             output = output_idle
+        return output
 
     def getCommand(self):
         l = self.sensor.readline()
