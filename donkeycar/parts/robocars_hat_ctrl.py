@@ -105,7 +105,9 @@ class RobocarsHatIn:
                     self.inAux2 = self.map_range(int(params[4]),
                         self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
                         -1, 1)
-                mylogger.debug("CtrlIn {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
+
+                mylogger.debug("CtrlIn PWM {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
+                mylogger.debug("CtrlIn Std {} {} {} {}".format(self.inThrottle, self.inSteering, self.inAux1, self.inAux2))
 
             if len(params) == 3 and int(params[0])==3 :
                 if params[1].isnumeric():
