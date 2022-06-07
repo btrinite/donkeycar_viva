@@ -1156,8 +1156,11 @@ class RobocarsHat:
                 self.buffer_string =  self.buffer_string + RobocarsHat.robocarshat_device.read(RobocarsHat.robocarshat_device.inWaiting()).decode('ascii')
                 if '\n' in self.buffer_string:
                     lines = self.buffer_string.split('\n') # Guaranteed to have at least 2 entries
-                    last_received = lines[-2]
-                    mylogger.debug("Rx Cmd {} {}".format(len(lines), last_received))
+                    drive = filter(lambda lines: lines.startswith('1'), lines)
+                    battery = filter(lambda lines: lines.startswith('0'), lines)
+                    sensors = filter(lambda lines: lines.startswith('2'), lines)
+                    calibration = filter(lambda lines: lines.startswith('3'), lines)
+                    last_received = drive[-2] + calibration[-2]
                     #If the Arduino sends lots of empty lines, you'll lose the
                     #last filled line, so you could make the above statement conditional
                     #like so: if lines[-2]: last_received = lines[-2]

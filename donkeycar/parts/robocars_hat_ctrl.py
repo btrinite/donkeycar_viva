@@ -72,54 +72,55 @@ class RobocarsHatIn:
         return output
 
     def getCommand(self):
-        l = self.sensor.readline()
-        if l != None and len(l)>0:
-            params = l.split(',')
-            mylogger.debug("CtrlIn cmd {}, len {}".format(int(params[0]), len(params)))
-            if len(params) == 5 and int(params[0])==1 :
-                if params[1].isnumeric() and self.inThrottleIdle != -1:
-                    if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
-                        self.inThrottle = self.dualMap(int(params[1]),
-                                self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.inThrottleIdle, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
-                            -1, 0, 1)
-                    else :
-                        self.inThrottle = self.map_range(int(params[1]),
-                                self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+        cmds = self.sensor.readline()
+        if cmds != None and len(cmds)>0:
+            for l in cmds:
+                params = l.split(',')
+                mylogger.debug("CtrlIn cmd {}, len {}".format(int(params[0]), len(params)))
+                if len(params) == 5 and int(params[0])==1 :
+                    if params[1].isnumeric() and self.inThrottleIdle != -1:
+                        if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+                            self.inThrottle = self.dualMap(int(params[1]),
+                                    self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.inThrottleIdle, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+                                -1, 0, 1)
+                        else :
+                            self.inThrottle = self.map_range(int(params[1]),
+                                    self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+                                -1, 1)
+                        if (self.cfg.ROBOCARSHAT_THROTTLE_FLANGER != None) :
+                            self.inThrottle = self.dualMap(self.inThrottle,
+                                    -1, 0, 1,
+                                self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[0], 0, self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[1])
+
+
+                    if params[2].isnumeric() and self.inSteeringIdle != -1:
+                        if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+                            self.inSteering = self.dualMap(int(params[2]),
+                                    self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.inSteeringIdle, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
+                                -1, 0, 1)
+                        else:
+                            self.inSteering = self.map_range(int(params[2]),
+                                self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
+                                -1, 1)
+
+                    if params[3].isnumeric():
+                        self.inAux1 = self.map_range(int(params[3]),
+                            self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
                             -1, 1)
-                    if (self.cfg.ROBOCARSHAT_THROTTLE_FLANGER != None) :
-                        self.inThrottle = self.dualMap(self.inThrottle,
-                                -1, 0, 1,
-                            self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[0], 0, self.cfg.ROBOCARSHAT_THROTTLE_FLANGER[1])
-
-
-                if params[2].isnumeric() and self.inSteeringIdle != -1:
-                    if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
-                        self.inSteering = self.dualMap(int(params[2]),
-                                self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.inSteeringIdle, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
-                            -1, 0, 1)
-                    else:
-                        self.inSteering = self.map_range(int(params[2]),
-                            self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_IN_STEERING_MAX,
+                    if params[4].isnumeric():
+                        self.inAux2 = self.map_range(int(params[4]),
+                            self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
                             -1, 1)
 
-                if params[3].isnumeric():
-                    self.inAux1 = self.map_range(int(params[3]),
-                        self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
-                        -1, 1)
-                if params[4].isnumeric():
-                    self.inAux2 = self.map_range(int(params[4]),
-                        self.cfg.ROBOCARSHAT_PWM_IN_AUX_MIN, self.cfg.ROBOCARSHAT_PWM_IN_AUX_MAX,
-                        -1, 1)
+                    mylogger.debug("CtrlIn PWM {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
+                    mylogger.debug("CtrlIn Std {} {} {} {}".format(self.inThrottle, self.inSteering, self.inAux1, self.inAux2))
 
-                mylogger.debug("CtrlIn PWM {} {} {} {}".format(int(params[1]), int(params[2]), int(params[3]), int(params[4])))
-                mylogger.debug("CtrlIn Std {} {} {} {}".format(self.inThrottle, self.inSteering, self.inAux1, self.inAux2))
-
-            if len(params) == 3 and int(params[0])==3 :
-                if params[1].isnumeric():
-                    self.inThrottleIdle = int(params[1])
-                if params[2].isnumeric():
-                    self.inSteeringIdle = int(params[2])
-                mylogger.debug("CtrlIn Idle {} {} ".format(int(params[1]), int(params[2])))
+                if len(params) == 3 and int(params[0])==3 :
+                    if params[1].isnumeric():
+                        self.inThrottleIdle = int(params[1])
+                    if params[2].isnumeric():
+                        self.inSteeringIdle = int(params[2])
+                    mylogger.debug("CtrlIn Idle {} {} ".format(int(params[1]), int(params[2])))
 
     def processAUxCh(self):
         self.recording=False
