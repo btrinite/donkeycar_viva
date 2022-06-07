@@ -31,8 +31,13 @@ class RobocarsHatIn:
         self.mode = 'user'
         self.lastMode = self.mode
         self.applyBrake = 0
-        self.inThrottleIdle = -1
-        self.inSteeringIdle = -1
+        if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+            self.inThrottleIdle = -1
+            self.inSteeringIdle = -1
+        else:
+            self.inThrottleIdle = 1500
+            self.inSteeringIdle = 1500
+
         #CH3 feature
         self.ch3Feature = self.CH3_FEATURE_RECORDandPILOT
         if self.cfg.ROBOCARSHAT_CH3_FEATURE == 'throttle_exploration':
@@ -68,7 +73,7 @@ class RobocarsHatIn:
 
     def getCommand(self):
         l = self.sensor.readline()
-        if l != None:
+        if l != None and len(l)>0:
             params = l.split(',')
             mylogger.debug("CtrlIn cmd {}, len {}".format(int(params[0]), len(params)))
             if len(params) == 5 and int(params[0])==1 :
