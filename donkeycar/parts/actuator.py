@@ -1156,15 +1156,15 @@ class RobocarsHat:
                 self.buffer_string =  self.buffer_string + RobocarsHat.robocarshat_device.read(RobocarsHat.robocarshat_device.inWaiting()).decode('ascii')
                 if '\n' in self.buffer_string:
                     lines = self.buffer_string.split('\n') # Guaranteed to have at least 2 entries
-                    drive = list(filter(lambda lines: lines.startswith('1'), lines))
-                    battery = list(filter(lambda lines: lines.startswith('0'), lines))
-                    sensors = list(filter(lambda lines: lines.startswith('2'), lines))
-                    calibration = list(filter(lambda lines: lines.startswith('3'), lines))
+                    self.buffer_string = lines[-1]
+                    drive = list(filter(lambda line: line.startswith('1'), lines[:-1]))
+                    battery = list(filter(lambda line: line.startswith('0'), lines[:-1]))
+                    sensors = list(filter(lambda line: line.startswith('2'), line[:-1]))
+                    calibration = list(filter(lambda line: line.startswith('3'), lines[:-1]))
                     last_received = drive[-2] + calibration[-2]
                     #If the Arduino sends lots of empty lines, you'll lose the
                     #last filled line, so you could make the above statement conditional
                     #like so: if lines[-2]: last_received = lines[-2]
-                    self.buffer_string = lines[-1]
             if last_received != None:
                 last_received = last_received.rstrip()
 
