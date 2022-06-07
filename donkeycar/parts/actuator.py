@@ -1162,9 +1162,9 @@ class RobocarsHat:
                     sensors = list(filter(lambda line: line.startswith('2'), lines[:-1]))
                     calibration = list(filter(lambda line: line.startswith('3'), lines[:-1]))
                     if (len(drive)>0) :
-                        last_received.push(drive[-1].rstrip())
+                        last_received.append(drive[-1].rstrip())
                     if (len(calibration)>0) :
-                        last_received.push (calibration[-1].rstrip())
+                        last_received.append(calibration[-1].rstrip())
                     #If the Arduino sends lots of empty lines, you'll lose the
                     #last filled line, so you could make the above statement conditional
                     #like so: if lines[-2]: last_received = lines[-2]
