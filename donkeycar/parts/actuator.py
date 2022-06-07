@@ -1108,22 +1108,28 @@ class RobocarsHat:
         self.running = True
         print('RobocarsHat drive train created')
 
-
     def set_pulse(self, throttle, steering):
+
+        if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+            throttle_idle = self.cfg.inThrottleIdle
+            steering_idle = self.cfg.inSteeringIdle
+        else:
+            throttle_idle = self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE
+            steering_idle = self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE
 
         if throttle > 0:
             pulse_throttle = dk.utils.map_range(throttle, 0, self.MAX_THROTTLE,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
+                                            throttle_idle, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
         else:
             pulse_throttle = dk.utils.map_range(throttle, self.MIN_THROTTLE, 0,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE)
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MIN, throttle_idle)
 
         if steering > 0:
             pulse_steering = dk.utils.map_range(steering, 0, self.MAX_STEERING,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MAX)
+                                            steering_idle, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MAX)
         else:
             pulse_steering = dk.utils.map_range(steering, self.MIN_STEERING, 0,
-                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_IDLE)
+                                            self.cfg.ROBOCARSHAT_PWM_OUT_STEERING_MIN, steering_idle)
         with RobocarsHat.robocarshat_lock:
             cmd=("1,%d,%d\n" % (int(pulse_throttle), int(pulse_steering))).encode('ascii')
             mylogger.debug("Tx CMD :{}".format(cmd))

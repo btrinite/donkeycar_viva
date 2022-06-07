@@ -31,12 +31,15 @@ class RobocarsHatIn:
         self.mode = 'user'
         self.lastMode = self.mode
         self.applyBrake = 0
+
         if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
             self.inThrottleIdle = -1
             self.inSteeringIdle = -1
         else:
             self.inThrottleIdle = 1500
             self.inSteeringIdle = 1500
+        self.cfg.inThrottleIdle = self.inThrottleIdle # hack to communicate idle value to actuator
+        self.cfg.inSteeringIdle = self.inSteeringIdle # hack to communicate idle value to actuator
 
         #CH3 feature
         self.ch3Feature = self.CH3_FEATURE_RECORDandPILOT
@@ -117,8 +120,10 @@ class RobocarsHatIn:
                 if len(params) == 3 and int(params[0])==3 :
                     if params[1].isnumeric():
                         self.inThrottleIdle = int(params[1])
+                        self.cfg.inThrottleIdle = self.inThrottleIdle # hack to communicate idle value to actuator
                     if params[2].isnumeric():
                         self.inSteeringIdle = int(params[2])
+                        self.cfg.inSteeringIdle = self.inSteeringIdle
                     mylogger.debug("CtrlIn Idle {} {} ".format(int(params[1]), int(params[2])))
 
     def processAUxCh(self):
