@@ -1111,6 +1111,7 @@ class RobocarsHat:
 
     def setSteeringTrim (self, steeringTrim) :
         self.steeringTrim=steeringTrim
+        mylogger.info("Tx set Steering Trim to :{}".format(self.steeringTrim))
 
     def set_pulse(self, throttle, steering):
 
