@@ -16,6 +16,7 @@ class RobocarsHatIn:
     CH3_FEATURE_THROTTLEEXP=1
     CH3_FEATURE_STEERINGEXP=2
     CH3_FEATURE_OUTPUT_STEERING_TRIM=3
+    CH3_FEATURE_OUTPUT_STEERING_EXP=3
 
     def __init__(self, cfg):
 
@@ -25,6 +26,7 @@ class RobocarsHatIn:
         self.fixThrottle = 0.0
         self.fixSteering = 0.0
         self.fixOutputSteeringTrim = None
+        self.fixOutputSteering = None
         self.inAux1 = 0.0
         self.inAux2 = 0.0
         self.lastAux1 = -1.0
@@ -50,6 +52,9 @@ class RobocarsHatIn:
         elif self.cfg.ROBOCARSHAT_CH3_FEATURE == 'output_steering_trim':
             self.ch3Feature = self.CH3_FEATURE_OUTPUT_STEERING_TRIM
             self.fixOutputSteeringTrim = 1500
+        elif self.cfg.ROBOCARSHAT_CH3_FEATURE == 'output_steering_exp':
+            self.ch3Feature = self.CH3_FEATURE_OUTPUT_STEERING_EXP
+            self.fixOutputSteering = 1500
 
         if self.cfg.ROBOCARSHAT_THROTTLE_DISCRET != None:
             self.discretesThrottle = np.arange(0.0,1.0001,1.0/len(self.cfg.ROBOCARSHAT_THROTTLE_DISCRET))
@@ -165,6 +170,16 @@ class RobocarsHatIn:
                     self.fixOutputSteeringTrim = max(self.fixOutputSteeringTrim-self.cfg.ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC,1000)
                     mylogger.info("CtrlIn Fixed output steering set to {}".format(self.fixOutputSteeringTrim))
                 self.sensor.setSteeringTrim (self.fixOutputSteeringTrim)            
+
+        elif self.ch3Feature == self.CH3_FEATURE_OUTPUT_STEERING_EXP :
+            if (abs(self.lastAux1 - self.inAux1)>0.5) :
+                if self.inAux1 > 0.5:
+                    self.fixOutputSteering = min(self.fixOutputSteering+self.cfg.ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC,2000)
+                    mylogger.info("CtrlIn Fixed output steering set to {}".format(self.fixOutputSteering))
+                if self.inAux1 < -0.5:
+                    self.fixOutputSteering = max(self.fixOutputSteering-self.cfg.ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC,1000)
+                    mylogger.info("CtrlIn Fixed output steering set to {}".format(self.fixOutputSteering))
+                self.sensor.setFixSteering (self.fixOutputSteering)            
 
         if self.cfg.ROBOCARSHAT_STEERING_FIX != None:
             user_steering = self.cfg.ROBOCARSHAT_STEERING_FIX

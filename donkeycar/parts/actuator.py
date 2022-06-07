@@ -1094,6 +1094,7 @@ class RobocarsHat:
     robocarshat_device = None
     robocarshat_lock = threading.Lock()
     steeringTrim = None # common to the two instances
+    fixSteering = None # common to the two instances
 
     def __init__(self, cfg):
         import serial
@@ -1111,7 +1112,11 @@ class RobocarsHat:
 
     def setSteeringTrim (self, steeringTrim) :
         RobocarsHat.steeringTrim=steeringTrim
-        mylogger.info("Tx set Steering Trim to :{}".format(self.steeringTrim))
+        mylogger.info("Tx set Steering Trim to :{}".format(RobocarsHat.steeringTrim))
+
+    def setFixSteering (self, fixSteering) :
+        RobocarsHat.fixSteering=fixSteering
+        mylogger.info("Tx set FIxed Steering to :{}".format(RobocarsHat.fixSteering))
 
     def set_pulse(self, throttle, steering):
 
@@ -1138,6 +1143,9 @@ class RobocarsHat:
         else:
             pulse_steering = steeringIdle
 
+        if (RobocarsHat.fixSteering != None):
+            pulse_steering = RobocarsHat.fixSteering
+            
         with RobocarsHat.robocarshat_lock:
             cmd=("1,%d,%d\n" % (int(pulse_throttle), int(pulse_steering))).encode('ascii')
             mylogger.debug("Tx CMD :{}".format(cmd))
