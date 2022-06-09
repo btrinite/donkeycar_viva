@@ -125,7 +125,10 @@ try:
             elif aug_type == 'GREY':
                 logger.info(f'Creating augmentation {aug_type}')
                 return iaa.Grayscale(alpha=(0.0, 1.0))
-                
+
+            elif aug_type == 'WB':
+                return iaa.ChangeColorTemperature((1100, 10000))
+
         # Parts interface
         def run(self, img_arr):
             aug_img_arr = self.augmentations.augment_image(img_arr)
