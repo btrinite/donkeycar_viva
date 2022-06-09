@@ -127,6 +127,7 @@ try:
                 return iaa.Grayscale(alpha=(0.0, 1.0))
 
             elif aug_type == 'WB':
+                logger.info(f'Creating augmentation {aug_type}')
                 return iaa.ChangeColorTemperature((1100, 10000))
 
         # Parts interface
