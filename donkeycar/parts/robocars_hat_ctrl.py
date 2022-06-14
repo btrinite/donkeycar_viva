@@ -66,11 +66,12 @@ class RobocarsHatIn:
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
 
+        self.emergemcyPort=9111
         self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.server.bind(("", 911))
-        print("Listening emergency on port 991")
+        self.server.bind(("", self.emergemcyPort))
+        print("Listening emergency on port {}".format(self.emergemcyPort))
 
     def map_range(self, x, X_min, X_max, Y_min, Y_max):
         '''
