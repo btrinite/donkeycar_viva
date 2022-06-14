@@ -9,7 +9,7 @@ from donkeycar.utilities.logger import init_special_logger
 import socket
 import errno
 import sys
-import fcntl
+import fcntl,os
 
 mylogger = init_special_logger ("Rx")
 mylogger.setLevel(logging.INFO)
