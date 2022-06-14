@@ -67,14 +67,15 @@ class RobocarsHatIn:
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
 
-        self.emergemcyPort=9111
-        self.stop=False
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        fcntl.fcntl(self.server, fcntl.F_SETFL, os.O_NONBLOCK)
-        self.server.bind(("", self.emergemcyPort))
-        print("Listening emergency on port {}".format(self.emergemcyPort))
+        if self.cfg.ROBOCARSHAT_EMERGENCY_STOP == True:
+            self.emergemcyPort=9111
+            self.stop=False
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+            self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            self.server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            fcntl.fcntl(self.server, fcntl.F_SETFL, os.O_NONBLOCK)
+            self.server.bind(("", self.emergemcyPort))
+            print("Listening emergency on port {}".format(self.emergemcyPort))
 
     def map_range(self, x, X_min, X_max, Y_min, Y_max):
         '''
@@ -232,15 +233,16 @@ class RobocarsHatIn:
             inds = max(inds,1)
             user_throttle = self.cfg.ROBOCARSHAT_THROTTLE_DISCRET[inds-1]
 
-        if self.getUDPCommand() == True:
-            self.mode=='user'
-            self.applyBrake=10
-            if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
-                user_throttle = self.inThrottleIdle
-            else:
-                user_throttle = self.map_range(0,
-                                    self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
-                                -1, 1)
+        if self.cfg.ROBOCARSHAT_EMERGENCY_STOP == True:
+            if self.getUDPCommand() == True:
+                self.mode=='user'
+                self.applyBrake=10
+                if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
+                    user_throttle = self.inThrottleIdle
+                else:
+                    user_throttle = self.map_range(0,
+                                        self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MIN, self.cfg.ROBOCARSHAT_PWM_IN_THROTTLE_MAX,
+                                    -1, 1)
 
         #if switching back to user, then apply brake
         if self.mode=='user' and self.lastMode != 'user' :
