@@ -273,7 +273,7 @@ class RobocarsHatIn:
         return user_steering, user_throttle, self.mode, self.recording
 
     def run (self):
-        self.getUDPCommand()
+        self.getCommand()
         user_throttle, user_steering = self.processAltModes ()
         return user_steering, user_throttle, self.mode, self.recording
     
