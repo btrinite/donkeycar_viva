@@ -112,7 +112,7 @@ class RobocarsHatIn:
         address = addr[1]
         clientMsg = "Message du client: {}".format(message)
         clientIP  = "Adresse IP du client: {}".format(address)
-        if (clientMsg.lower()=="stop"):
+        if (self.stop == False and "stop" in clientMsg.lower()):
             print ("Got emergency STOP request from :")
             print(clientMsg)
             print(clientIP)
