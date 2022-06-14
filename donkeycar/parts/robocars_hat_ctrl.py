@@ -94,7 +94,7 @@ class RobocarsHatIn:
 
     def getUDPCommand(self):
         try:
-            addr = self.s.recvfrom(1024)
+            addr = self.server.recvfrom(1024)
         except socket.error as e:
             err = e.args[0]
             if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
