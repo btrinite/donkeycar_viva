@@ -9,6 +9,7 @@ from donkeycar.utilities.logger import init_special_logger
 import socket
 import errno
 import sys
+import fcntl
 
 mylogger = init_special_logger ("Rx")
 mylogger.setLevel(logging.INFO)
@@ -71,6 +72,7 @@ class RobocarsHatIn:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        fcntl.fcntl(self.server, fcntl.F_SETFL, os.O_NONBLOCK)
         self.server.bind(("", self.emergemcyPort))
         print("Listening emergency on port {}".format(self.emergemcyPort))
 
