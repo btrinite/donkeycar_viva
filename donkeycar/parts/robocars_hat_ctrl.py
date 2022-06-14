@@ -6,6 +6,9 @@ import logging
 import numpy as np
 from donkeycar.parts.actuator import RobocarsHat
 from donkeycar.utilities.logger import init_special_logger
+import socket
+import errno
+import sys
 
 mylogger = init_special_logger ("Rx")
 mylogger.setLevel(logging.INFO)
@@ -63,6 +66,12 @@ class RobocarsHatIn:
         self.sensor = RobocarsHat(self.cfg)
         self.on = True
 
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self.server.bind(("", 911))
+        print("Listening emergency on port 991")
+
     def map_range(self, x, X_min, X_max, Y_min, Y_max):
         '''
         Linear mapping between two ranges of values
@@ -81,6 +90,25 @@ class RobocarsHatIn:
         else:
             output = output_idle
         return output
+
+    def getUDPCommand(self):
+        try:
+            addr = self.s.recvfrom(1024)
+        except socket.error as e:
+            err = e.args[0]
+            if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+                return
+            else:
+                # a "real" error occurred
+                print (e)
+                sys.exit(1)
+
+        message = addr[0]
+        address = addr[1]
+        clientMsg = "Message du client: {}".format(message)
+        clientIP  = "Adresse IP du client: {}".format(address)
+        print(clientMsg)
+        print(clientIP)
 
     def getCommand(self):
         cmds = self.sensor.readline()
@@ -223,6 +251,7 @@ class RobocarsHatIn:
         return user_steering, user_throttle, self.mode, self.recording
 
     def run (self):
+        self.getUDPCommand()
         self.getCommand()
         user_throttle, user_steering = self.processAltModes ()
         return user_steering, user_throttle, self.mode, self.recording
