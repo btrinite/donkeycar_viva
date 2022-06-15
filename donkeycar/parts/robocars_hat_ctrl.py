@@ -96,7 +96,7 @@ class RobocarsHatIn:
             output = output_idle
         return output
 
-    def getUDPCommand(self):
+    def getEmergencyCommand(self):
         try:
             addr = self.server.recvfrom(1024)
         except socket.error as e:
@@ -112,14 +112,13 @@ class RobocarsHatIn:
         address = addr[1]
         clientMsg = "Message du client: {}".format(message)
         clientIP  = "Adresse IP du client: {}".format(address)
-        if (self.stop == False and "stop" in clientMsg.lower()):
+        if (self.stop == False and "stop" in clientMsg.decode('ascii').lower()):
             print ("Got emergency STOP request from :")
             print(clientMsg)
             print(clientIP)
             self.stop=True
-
-        return self.stop
-
+            return True
+        return False
 
     def getCommand(self):
         cmds = self.sensor.readline()
@@ -234,7 +233,7 @@ class RobocarsHatIn:
             user_throttle = self.cfg.ROBOCARSHAT_THROTTLE_DISCRET[inds-1]
 
         if self.cfg.ROBOCARSHAT_EMERGENCY_STOP == True:
-            if self.getUDPCommand() == True:
+            if self.getEmergencyCommand() == True:
                 self.mode=='user'
                 self.applyBrake=10
                 if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
