@@ -236,6 +236,7 @@ class RobocarsHatIn:
             if self.getEmergencyCommand() == True:
                 self.mode=='user'
                 self.applyBrake=10
+            if self.stop=True :
                 if (self.cfg.ROBOCARSHAT_USE_AUTOCALIBRATION==True) :
                     user_throttle = self.inThrottleIdle
                 else:
