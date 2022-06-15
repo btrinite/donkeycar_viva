@@ -110,9 +110,9 @@ class RobocarsHatIn:
 
         message = addr[0]
         address = addr[1]
-        clientMsg = "Message du client: {}".format(message)
-        clientIP  = "Adresse IP du client: {}".format(address)
-        if (self.stop == False and "stop" in clientMsg.decode('ascii').lower()):
+        clientIP  = "Client IP : {}".format(address)
+        clientMsg = "Command : {}".format(message)
+        if (self.stop == False and "stop" in message.decode('ascii').lower()):
             print ("Got emergency STOP request from :")
             print(clientMsg)
             print(clientIP)
