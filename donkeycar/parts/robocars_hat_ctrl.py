@@ -254,11 +254,11 @@ class RobocarsHatIn:
                 self.mode='local_angle'
                 user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
 
-        elif self.ch3Feature == self.AUX_FEATURE_RECORD :
+        elif self.ch4Feature == self.AUX_FEATURE_RECORD :
             if self.inAux2 > 0.5:
                 self.recording=True
 
-        elif self.ch3Feature == self.AUX_FEATURE_PILOT :
+        elif self.ch4Feature == self.AUX_FEATURE_PILOT :
             if self.inAux2 > 0.5:
                 self.mode='local_angle'
 
