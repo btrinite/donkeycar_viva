@@ -494,13 +494,17 @@ ROBOCARSHAT_LOCAL_ANGLE_BRAKE_THROTTLE = -0.2
 
 THROTTLE_BRAKE_REV_FILTER = False # ESC is configured in Fw/Rv mode (no braking)
 
-#ROBOCARSHAT_CH3_FEATURE control the feature attached to radio ch3
-# 'record/pilot' mean ch3 is used to control either data recording (lower position), either to enable pilot mode (upper position)
-# 'throttle_exploration' means special mode where CH3 is used to increment/decrement a fixed throttle value in user mode 
-# 'steering_exploration' means special mode where CH3 is used to increment/decrement a fixed steering value in user mode 
-# 'output_steering_trim' means special mode where CH3 is used to increment/decrement a steering idle output for triming direction in user mode, resulting value must be reported in  ROBOCARSHAT_PWM_OUT_STEERING_IDLE
-# 'output_steering_exp' means special mode where CH3 is used to increment/decrement a fixed steering output to calibrate direction in user mode, resulting values must be reported in  ROBOCARSHAT_PWM_IN_STEERING_MIN and ROBOCARSHAT_PWM_IN_STEERING_MAX
+#ROBOCARSHAT_CH3_FEATURE and ROBOCARSHAT_CH4_FEATURE controls the feature attached to radio ch3 and ch4
+# 'none' means aux ch is not used 
+# 'record/pilot' means aux ch is used to control either data recording (lower position), either to enable pilot mode (upper position)
+# 'record' means aux ch is used to control data recording 
+# 'pilot' means aux ch is used to control pilot mode
+# 'throttle_exploration' means special mode where aux ch is used to increment/decrement a fixed throttle value in user mode 
+# 'steering_exploration' means special mode where aux ch is used to increment/decrement a fixed steering value in user mode 
+# 'output_steering_trim' means special mode where aux ch is used to increment/decrement a steering idle output for triming direction in user mode, resulting value must be reported in  ROBOCARSHAT_PWM_OUT_STEERING_IDLE
+# 'output_steering_exp' means special mode where aux ch is used to increment/decrement a fixed steering output to calibrate direction in user mode, resulting values must be reported in  ROBOCARSHAT_PWM_IN_STEERING_MIN and ROBOCARSHAT_PWM_IN_STEERING_MAX
 ROBOCARSHAT_CH3_FEATURE = 'record/pilot' 
+ROBOCARSHAT_CH4_FEATURE = 'none' 
 ROBOCARSHAT_THROTTLE_EXP_INC = 0.05 
 ROBOCARSHAT_STEERING_EXP_INC = 0.05 
 ROBOCARSHAT_OUTPUT_STEERING_TRIM_INC = 10 
