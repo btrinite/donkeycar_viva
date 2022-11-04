@@ -204,6 +204,7 @@ class RobocarsHatIn:
         elif self.ch3Feature == self.AUX_FEATURE_PILOT :
             if self.inAux1 > 0.5:
                 self.mode='local_angle'
+                user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
 
         elif self.ch3Feature == self.AUX_FEATURE_THROTTLEEXP :
             if (abs(self.lastAux1 - self.inAux1)>0.5) :
@@ -261,6 +262,7 @@ class RobocarsHatIn:
         elif self.ch4Feature == self.AUX_FEATURE_PILOT :
             if self.inAux2 > 0.5:
                 self.mode='local_angle'
+                user_throttle = self.cfg.ROBOCARSHAT_LOCAL_ANGLE_FIX_THROTTLE
 
         elif self.ch4Feature == self.AUX_FEATURE_THROTTLEEXP :
             if (abs(self.lastAux2 - self.inAux2)>0.5) :
