@@ -187,7 +187,7 @@ class RobocarsHatIn:
                 if len(params) == 3 and int(params[0])==2 :
                     mylogger.debug("CtrlIn Sensors {} {} ".format(int(params[1]), int(params[2])))
                     if params[2].isnumeric():
-                        self.inSpeed = self.map_range(abs(int(params[2])),
+                        self.inSpeed = self.map_range(min(abs(int(params[2])),10000),
                                     0, 10000,
                                 1, 0)
 
