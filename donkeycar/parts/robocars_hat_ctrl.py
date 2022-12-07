@@ -66,6 +66,8 @@ class RobocarsHatIn:
             self.inThrottleIdle = 1500
             self.inSteeringIdle = 1500
 
+        self.inSpeed = 0
+
         #Aux feature
         self.ch3Feature = self.AUX_FEATURE_NONE
         self.ch4Feature = self.AUX_FEATURE_NONE
@@ -184,6 +186,10 @@ class RobocarsHatIn:
                 
                 if len(params) == 3 and int(params[0])==2 :
                     mylogger.debug("CtrlIn Sensors {} {} ".format(int(params[1]), int(params[2])))
+                    if params[2].isnumeric():
+                        self.inSpeed = self.map_range(abs(int(params[2])),
+                                    0, 10000,
+                                1, 0)
 
 
 
@@ -360,12 +366,12 @@ class RobocarsHatIn:
 
     def run_threaded(self):
         user_throttle, user_steering = self.processAltModes ()
-        return user_steering, user_throttle, self.mode, self.recording
+        return user_steering, user_throttle, self.mode, self.recording, self.inSpeed
 
     def run (self):
         self.getCommand()
         user_throttle, user_steering = self.processAltModes ()
-        return user_steering, user_throttle, self.mode, self.recording
+        return user_steering, user_throttle, self.mode, self.recording, self.inSpeed
     
 
     def shutdown(self):

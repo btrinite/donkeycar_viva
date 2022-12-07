@@ -84,6 +84,8 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
             from donkeycar.parts.encoder import ArduinoEncoder
             enc = ArduinoEncoder(mm_per_tick=cfg.MM_PER_TICK, debug=cfg.ODOM_DEBUG)
             V.add(enc, outputs=['enc/speed'], threaded=True)
+        elif cfg.USE_ROBOCARSHAT_AS_CONTROLLER:
+            print("ODOM from RObocars Hat")
         else:
             print("No supported encoder found")
 
@@ -242,7 +244,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
     if cfg.USE_ROBOCARSHAT_AS_CONTROLLER:
         from donkeycar.parts.robocars_hat_ctrl import RobocarsHatIn
         ctr = RobocarsHatIn(cfg)
-        V.add(ctr, outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],threaded=False)
+        V.add(ctr, outputs=['user/angle', 'user/throttle', 'user/mode', 'recording', 'enc/speed'],threaded=False)
 
 
     if cfg.THROTTLE_BRAKE_REV_FILTER == True:
