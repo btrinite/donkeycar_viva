@@ -1187,6 +1187,10 @@ class RobocarsHat:
                         last_received.append(drive[-1].rstrip())
                     if (len(calibration)>0) :
                         last_received.append(calibration[-1].rstrip())
+                    if (len(sensors)>0) :
+                        last_received.append(sensors[-1].rstrip())
+                    if (len(battery)>0) :
+                        last_received.append(battery[-1].rstrip())
                     #If the Arduino sends lots of empty lines, you'll lose the
                     #last filled line, so you could make the above statement conditional
                     #like so: if lines[-2]: last_received = lines[-2]
