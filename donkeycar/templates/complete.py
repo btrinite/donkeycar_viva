@@ -84,7 +84,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
             from donkeycar.parts.encoder import ArduinoEncoder
             enc = ArduinoEncoder(mm_per_tick=cfg.MM_PER_TICK, debug=cfg.ODOM_DEBUG)
             V.add(enc, outputs=['enc/speed'], threaded=True)
-        elif cfg.USE_ROBOCARSHAT_AS_CONTROLLER:
+        elif cfg.ENCODER_TYPE == "ROBOCARSHAT" and cfg.USE_ROBOCARSHAT_AS_CONTROLLER:
             print("ODOM from RObocars Hat")
         else:
             print("No supported encoder found")
