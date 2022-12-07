@@ -181,6 +181,7 @@ class RobocarsHatIn:
                     if params[2].isnumeric():
                         self.inSteeringIdle = int(params[2])
                     mylogger.debug("CtrlIn Idle {} {} ".format(int(params[1]), int(params[2])))
+                
                 if len(params) == 3 and int(params[0])==2 :
                     mylogger.debug("CtrlIn Sensors {} {} ".format(int(params[1]), int(params[2])))
 
