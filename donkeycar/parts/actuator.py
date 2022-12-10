@@ -1103,7 +1103,7 @@ class RobocarsHat:
         self.buffer_string = ''
         self.throttle = 0
         self.steering = 0
-
+        self.loc = 0
         if RobocarsHat.robocarshat_device == None:
             RobocarsHat.robocarshat_device = serial.Serial(self.cfg.ROBOCARSHAT_SERIAL_PORT, 1000000, timeout = 0.01)
 
@@ -1118,8 +1118,14 @@ class RobocarsHat:
         RobocarsHat.fixSteering=fixSteering
         mylogger.info("Tx set FIxed Steering to :{}".format(RobocarsHat.fixSteering))
 
-    def set_pulse(self, throttle, steering):
+    def set_pulse(self, throttle, steering, loc):
 
+        if (self.cfg.ROBOCARSHAT_LOCALIZER_MODEL):
+            if (loc==1):
+                throttle = self.cfg.ROBOCARSHAT_LOC_PILOT_RUN_THROTTLE
+            if (loc==2):
+                throttle = self.cfg.ROBOCARSHAT_LOC_PILOT_TURN_THROTTLE
+            
         if throttle > 0:
             pulse_throttle = dk.utils.map_range(throttle, 0, self.MAX_THROTTLE,
                                             self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_IDLE, self.cfg.ROBOCARSHAT_PWM_OUT_THROTTLE_MAX)
@@ -1155,10 +1161,11 @@ class RobocarsHat:
         # not implemented
         pass
 
-    def run(self, throttle, steering):
+    def run(self, throttle, steering, loc):
         self.throttle = throttle
         self.steering = steering
-        self.set_pulse(self.throttle, self.steering)
+        self.loc = loc
+        self.set_pulse(self.throttle, self.steering, self.loc)
 
     def shutdown(self):
         # set steering straight

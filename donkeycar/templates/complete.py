@@ -509,22 +509,22 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
     class DriveMode:
         def run(self, mode,
                     user_angle, user_throttle,
-                    pilot_angle, pilot_throttle):
+                    pilot_angle, pilot_throttle, pilot_loc):
             if mode == 'user':
-                return user_angle, user_throttle
+                return user_angle, user_throttle, 0
 
             elif mode == 'local_angle':
-                return pilot_angle if pilot_angle else 0.0, user_throttle
+                return pilot_angle if pilot_angle else 0.0, user_throttle, pilot_loc
 
             else:
                 return pilot_angle if pilot_angle else 0.0, \
                        pilot_throttle * cfg.AI_THROTTLE_MULT \
-                           if pilot_throttle else 0.0
+                           if pilot_throttle else 0.0, pilot_loc
 
     V.add(DriveMode(),
           inputs=['user/mode', 'user/angle', 'user/throttle',
-                  'pilot/angle', 'pilot/throttle'],
-          outputs=['angle', 'throttle'])
+                  'pilot/angle', 'pilot/throttle', 'pilot/loc'],
+          outputs=['angle', 'throttle', 'loc'])
 
 
     #to give the car a boost when starting ai mode in a race.
@@ -756,7 +756,7 @@ def drive(cfg, model_path=None, use_joystick=False, model_type=None,
     elif cfg.DRIVE_TRAIN_TYPE == "ROBOCARSHAT":
         from donkeycar.parts.actuator import RobocarsHat
         train_controller = RobocarsHat(cfg)
-        V.add(train_controller, inputs=['throttle','angle'], threaded=False)
+        V.add(train_controller, inputs=['throttle','angle', 'loc'], threaded=False)
 
     # OLED setup
     if cfg.USE_SSD1306_128_32:
